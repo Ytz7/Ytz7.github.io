@@ -20,9 +20,9 @@
     
     
     <entry>
-      <title>友情链接</title>
-      <link href="/project/link/index.html"/>
-      <url>/project/link/index.html</url>
+      <title>标签</title>
+      <link href="/project/tags/index.html"/>
+      <url>/project/tags/index.html</url>
       
         <content type="html"><![CDATA[]]></content>
       
@@ -31,9 +31,20 @@
     
     
     <entry>
-      <title>标签</title>
-      <link href="/project/tags/index.html"/>
-      <url>/project/tags/index.html</url>
+      <title>about</title>
+      <link href="/project/about/index.html"/>
+      <url>/project/about/index.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h1><h2 id="一个废材研究生"><a href="#一个废材研究生" class="headerlink" title="一个废材研究生"></a>一个废材研究生</h2>]]></content>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>友情链接</title>
+      <link href="/project/link/index.html"/>
+      <url>/project/link/index.html</url>
       
         <content type="html"><![CDATA[]]></content>
       
@@ -47,17 +58,6 @@
       <url>/project/categories/index.html</url>
       
         <content type="html"><![CDATA[]]></content>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>about</title>
-      <link href="/project/about/index.html"/>
-      <url>/project/about/index.html</url>
-      
-        <content type="html"><![CDATA[<h1 id="关于我"><a href="#关于我" class="headerlink" title="关于我"></a>关于我</h1>]]></content>
       
     </entry>
     
