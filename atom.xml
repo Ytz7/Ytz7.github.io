@@ -3,11 +3,11 @@
   <title>七号zz の Blog</title>
   
   <subtitle>愿为未来做牛马。</subtitle>
-  <link href="https://ytz7.github.io/project/atom.xml" rel="self"/>
+  <link href="https://ytz7.github.io/atom.xml" rel="self"/>
   
-  <link href="https://ytz7.github.io/project/"/>
+  <link href="https://ytz7.github.io/"/>
   <updated>2023-04-24T14:11:36.726Z</updated>
-  <id>https://ytz7.github.io/project/</id>
+  <id>https://ytz7.github.io/</id>
   
   <author>
     <name>Tonzhen You</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="https://ytz7.github.io/project/posts/16107.html"/>
-    <id>https://ytz7.github.io/project/posts/16107.html</id>
+    <link href="https://ytz7.github.io/posts/16107.html"/>
+    <id>https://ytz7.github.io/posts/16107.html</id>
     <published>2023-04-24T14:04:31.707Z</published>
     <updated>2023-04-24T14:11:36.726Z</updated>
     
