@@ -17,11 +17,30 @@
     
     
     <entry>
+      <title>test-blog</title>
+      <link href="/posts/467ec823.html"/>
+      <url>/posts/467ec823.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="这是一篇测试博客"><a href="#这是一篇测试博客" class="headerlink" title="这是一篇测试博客"></a>这是一篇测试博客</h1>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> test </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>semi-suprised-learning-start</title>
       <link href="/posts/c5dfaf4c.html"/>
       <url>/posts/c5dfaf4c.html</url>
       
-        <content type="html"><![CDATA[<h1 id="半监督学习"><a href="#半监督学习" class="headerlink" title="半监督学习"></a>半监督学习</h1><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>学习了快一个学期的 Java 程序开发，让我感觉开发的过程真的好空洞…但是我并不知道下一步到底要做什么，又处于想找实习又怕找不到的情况下，刷了几天 LeetCode，然后又变成了“小🐏人”，紧接着被隔离😅，真的挺痛苦，所幸在第三天就“出狱”了，在蹲“监狱”期间，受到一个“狱友”的启发，“还是要做好职业规划的，若是没有做好职业规划，像一只无头苍蝇一样，很可能在毕业之际还是找不到工作。”在思考了一天后，我决定重新开始在“半监督学习”这个领域开始零基础学习了，以下将会记录我在学习时候遇到的问题/解决方式/新思路/感想。</p>]]></content>
+        <content type="html"><![CDATA[<h1 id="半监督学习"><a href="#半监督学习" class="headerlink" title="半监督学习"></a>半监督学习</h1><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>学习了快一个学期的 Java 程序开发，让我感觉开发的过程真的好空洞…但是我并不知道下一步到底要做什么，又处于想找实习又怕找不到的情况下，刷了几天 LeetCode，然后又变成了“小🐏人”，紧接着被隔离😅，真的挺痛苦，所幸在第三天就“出狱”了，在蹲“监狱”期间，受到一个“狱友”的启发，“还是要做好职业规划的，若是没有做好职业规划，像一只无头苍蝇一样，很可能在毕业之际还是找不到工作。”在思考了一天后，我决定重新开始在“半监督学习”这个领域开始零基础学习了，以下将会记录我在学习时候遇到的问题/解决方式/新思路/感想。</p><p><img src="./semi-suprised-learning-start.assets/AlexNet.png" alt=""></p>]]></content>
       
       
       <categories>
