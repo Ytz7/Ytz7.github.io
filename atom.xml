@@ -6,7 +6,7 @@
   <link href="https://ytz7.github.io/atom.xml" rel="self"/>
   
   <link href="https://ytz7.github.io/"/>
-  <updated>2023-05-11T07:46:16.849Z</updated>
+  <updated>2023-05-11T07:52:24.758Z</updated>
   <id>https://ytz7.github.io/</id>
   
   <author>
@@ -20,8 +20,8 @@
     <title>Hello World</title>
     <link href="https://ytz7.github.io/posts/16107.html"/>
     <id>https://ytz7.github.io/posts/16107.html</id>
-    <published>2023-05-11T07:46:16.849Z</published>
-    <updated>2023-05-11T07:46:16.849Z</updated>
+    <published>2023-05-11T07:52:24.758Z</published>
+    <updated>2023-05-11T07:52:24.758Z</updated>
     
     <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></tbody></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
     
@@ -41,14 +41,15 @@
     <link href="https://ytz7.github.io/posts/467ec823.html"/>
     <id>https://ytz7.github.io/posts/467ec823.html</id>
     <published>2023-05-11T07:42:17.000Z</published>
-    <updated>2023-05-11T07:46:16.853Z</updated>
+    <updated>2023-05-11T07:52:24.758Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="这是一篇测试博客"><a href="#这是一篇测试博客" class="headerlink" title="这是一篇测试博客"></a>这是一篇测试博客</h1>]]></content>
+    <content type="html"><![CDATA[<h1 id="这是一篇测试博客"><a href="#这是一篇测试博客" class="headerlink" title="这是一篇测试博客"></a>这是一篇测试博客</h1><p>修改一下在上传试试…</p>]]></content>
     
     
       
       
-    <summary type="html">&lt;h1 id=&quot;这是一篇测试博客&quot;&gt;&lt;a href=&quot;#这是一篇测试博客&quot; class=&quot;headerlink&quot; title=&quot;这是一篇测试博客&quot;&gt;&lt;/a&gt;这是一篇测试博客&lt;/h1&gt;</summary>
+    <summary type="html">&lt;h1 id=&quot;这是一篇测试博客&quot;&gt;&lt;a href=&quot;#这是一篇测试博客&quot; class=&quot;headerlink&quot; title=&quot;这是一篇测试博客&quot;&gt;&lt;/a&gt;这是一篇测试博客&lt;/h1&gt;&lt;p&gt;修改一下在上传试试…&lt;/p&gt;
+</summary>
       
     
     
@@ -63,7 +64,7 @@
     <link href="https://ytz7.github.io/posts/c5dfaf4c.html"/>
     <id>https://ytz7.github.io/posts/c5dfaf4c.html</id>
     <published>2023-05-11T07:08:40.000Z</published>
-    <updated>2023-05-11T07:46:16.853Z</updated>
+    <updated>2023-05-11T07:52:24.758Z</updated>
     
     <content type="html"><![CDATA[<h1 id="半监督学习"><a href="#半监督学习" class="headerlink" title="半监督学习"></a>半监督学习</h1><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>学习了快一个学期的 Java 程序开发，让我感觉开发的过程真的好空洞…但是我并不知道下一步到底要做什么，又处于想找实习又怕找不到的情况下，刷了几天 LeetCode，然后又变成了“小🐏人”，紧接着被隔离😅，真的挺痛苦，所幸在第三天就“出狱”了，在蹲“监狱”期间，受到一个“狱友”的启发，“还是要做好职业规划的，若是没有做好职业规划，像一只无头苍蝇一样，很可能在毕业之际还是找不到工作。”在思考了一天后，我决定重新开始在“半监督学习”这个领域开始零基础学习了，以下将会记录我在学习时候遇到的问题/解决方式/新思路/感想。</p><p><img src="./semi-suprised-learning-start.assets/AlexNet.png" alt=""></p>]]></content>
     
