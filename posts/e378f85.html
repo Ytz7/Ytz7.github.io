@@ -1,0 +1,423 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>FixMatch | 七号zz の Blog</title><meta name="author" content="七号zz"><meta name="copyright" content="七号zz"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Simplifying Semi-Supervised Learning with Consistency and Confidence  会议：NeurIPS 2020 论文地址：FixMatch: Simplifying Semi-Supervised Learning with Consistency and Confidence Pytorch 复现：  kekmodel&#x2F;FixMatc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FixMatch">
+<meta property="og:url" content="https://ytz7.github.io/posts/e378f85.html">
+<meta property="og:site_name" content="七号zz の Blog">
+<meta property="og:description" content="Simplifying Semi-Supervised Learning with Consistency and Confidence  会议：NeurIPS 2020 论文地址：FixMatch: Simplifying Semi-Supervised Learning with Consistency and Confidence Pytorch 复现：  kekmodel&#x2F;FixMatc">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default.jpg">
+<meta property="article:published_time" content="2023-05-22T05:01:14.000Z">
+<meta property="article:modified_time" content="2023-05-22T13:05:58.470Z">
+<meta property="article:author" content="七号zz">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="Semi-Surprised-Learning">
+<meta property="article:tag" content="Hybrid Methods">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ytz7.github.io/posts/e378f85.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="manifest" href="/manifest.json"/><meta name="msapplication-TileColor" content="#eedeab"/><link rel="apple-touch-icon" sizes="180x180" href="/img/siteicon/128.png"/><link rel="icon" type="image/png" sizes="32x32" href="/img/siteicon/32.png"/><link rel="icon" type="image/png" sizes="16x16" href="/img/siteicon/16.png"/><link rel="mask-icon" href="/img/siteicon/128.png" color="#5bbad5"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'FixMatch',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-22 21:05:58'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-tag-plugins-plus@latest/lib/assets/font-awesome-animation.min.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-tag-plugins-plus@latest/lib/tag_plugins.css" media="defer" onload="this.media='all'"><script src="https://cdn.cbd.int/hexo-butterfly-tag-plugins-plus@latest/lib/assets/carousel-touch.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-wowjs/lib/animate.min.css" media="print" onload="this.media='screen'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="七号zz の Blog" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/2023/03/30/dd14a464-53ce-46f4-897e-e42d595faf5a14.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-envelope"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="七号zz の Blog"><span class="site-name">七号zz の Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-envelope"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">FixMatch</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-05-22T05:01:14.000Z" title="发表于 2023-05-22 13:01:14">2023-05-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-22T13:05:58.470Z" title="更新于 2023-05-22 21:05:58">2023-05-22</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%8D%8A%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/">半监督学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="FixMatch"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="post-content" id="article-container"><blockquote>
+<p>Simplifying Semi-Supervised Learning with Consistency and Confidence</p>
+</blockquote>
+<p>会议：NeurIPS 2020</p>
+<p>论文地址：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2001.07685">FixMatch: Simplifying Semi-Supervised Learning with Consistency and Confidence</a></p>
+<p>Pytorch 复现：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/kekmodel/FixMatch-pytorch">kekmodel/FixMatch-pytorch</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/CoinCheung/fixmatch-pytorch">CoinCheung/fixmatch-pytorch</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/valencebond/FixMatch_pytorch">valencebond/FixMatch_pytorch:</a></li>
+</ul>
+<p>参考文章：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://amitness.com/2020/07/semi-supervised-learning/">Semi-Supervised Learning in Computer Vision</a></li>
+</ul>
+<h2 id="主要工作"><a href="#主要工作" class="headerlink" title="主要工作"></a>主要工作</h2><p>FixMatch 结合了半监督学习之前的工作，结合<u><strong>伪标签（ pseudo-label）</strong></u>和 <u><strong>一致性正则（Consistency Regularization）</strong></u>，并且它更简单，相较于之前在半监督学习的工作，比如：UDA 和 ReMixMatch，如下图所示，FixMatch 在有标签数据上训练，将预测所得到的概率分布与真实标签计算损失 <code>L1</code>；</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230522192955482.png" alt="image-20230522192955482"></p>
+<p>对于无标签数据，FixMatch 做了两次数据增强，这是一个相较于其他工作特别的地方，FixMatch 分别对无标签数据做了<code>弱增强（Weakly Augmented）</code>和<code>强增强（Strongly Augmented）</code>，对于弱增强后的数据通过模型预测得到一个概率分布，并且，对这一概率分布做一特殊处理，最概率分布中最大的概率，设置一个阈值，若该概率大于该阈值，那么则将其纳入损失函数之中，并且，使用 <code>arg max</code>使其分布变为 <code>One-Hot</code>形式，接着与强增强后的数据通过模型预测得到的分布作交叉熵得到损失<code>L2</code>，最后通过加权和得到最终的损失。</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230522192925406.png" alt="image-20230522192925406"></p>
+<p>其中 L1、L2 以及最终的损失如下图所示：</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230522193829744.png" alt="image-20230522193829744"></p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230522193843142.png" alt="image-20230522193843142"></p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230522193917729.png" alt="image-20230522193917729"></p>
+<p>这里提一下，在计算有标签数据，将对对其作一些<u><strong>弱增强</strong></u>的操作，一个很有意思的结果，对于权重系数 <code>λ</code>，在先前的工作中都显示对权重系数慢慢提升是一个很重要的部分，但在 FixMatch 中，提升权重系数这一部分以及包含在算法当中，就不需要额外进行一些计算将权重系数慢慢增大：</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230522194843295.png" alt="image-20230522194843295"></p>
+<p>不需要添加这个权重系数的原因是：在损失函数中 <code>max(qb)</code>在早期训练中绝大部分数据通过模型预测得到的最大概率值都会比阈值<code>τ</code>小，在训练的过程中，模型的预测输出将会越来越“自信”，而将会有越来越多的数据样本的 <code>max(qb) &gt; τ </code>。</p>
+<h2 id="数据增强方式"><a href="#数据增强方式" class="headerlink" title="数据增强方式"></a>数据增强方式</h2><h3 id="弱增强（Weak-Augmentation）"><a href="#弱增强（Weak-Augmentation）" class="headerlink" title="弱增强（Weak Augmentation）"></a>弱增强（Weak Augmentation）</h3><p>论文中使用了简单的<u><strong>翻转和平移（flip-and-shift）</strong></u>策略：</p>
+<ul>
+<li><p><strong>Random Horizontal Flip</strong></p>
+<p><img src="https://amitness.com/images/fixmatch-horizontal-flip-gif" alt="Example of Random Horizontal Flip"></p>
+<p>随机水平翻转，论文中使用了设置其概率为 0.5，对于 SVHN 数据集不适用该增强方式，因为 <u><strong>SVHN 数据集为都是数字</strong></u>，对数字进行翻转，没有意义，以下是基于 Pytorch 实现：</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"><span class="keyword">import</span> torchvision.transforms <span class="keyword">as</span> transforms</span><br><span class="line"></span><br><span class="line">im = Image.<span class="built_in">open</span>(<span class="string">'dog.png'</span>)</span><br><span class="line">weak_im = transforms.RandomHorizontalFlip(p=<span class="number">0.5</span>)(im)</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p><strong>Random Vertical and Horizontal Translation</strong></p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/fixmatch-translate.gif" alt="Example of Random Vertical and Horizontal Translation"></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torchvision.transforms <span class="keyword">as</span> transforms</span><br><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"></span><br><span class="line">im = Image.<span class="built_in">open</span>(<span class="string">'dog.png'</span>)</span><br><span class="line">resized_im = transforms.Resize(<span class="number">32</span>)(im)</span><br><span class="line">translated = transforms.RandomCrop(size=<span class="number">32</span>, </span><br><span class="line">                                 padding=<span class="built_in">int</span>(<span class="number">32</span>*<span class="number">0.125</span>), </span><br><span class="line">                                 padding_mode=<span class="string">'reflect'</span>)(resized_im)</span><br></pre></td></tr></tbody></table></figure></li>
+</ul>
+<h3 id="强增强（Strong-Augmentation）"><a href="#强增强（Strong-Augmentation）" class="headerlink" title="强增强（Strong Augmentation）"></a>强增强（Strong Augmentation）</h3><p>FixMatch 对数据样本运用了 <code>RandAugment </code> 和 <code>CTAugment </code>后，在对其使用 <code>CutOut </code>增强方式。</p>
+<ul>
+<li><p>Cutout</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/fixmatch-cutout.gif" alt="Example of Cutout Augmentation"></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torchvision.transforms <span class="keyword">as</span> transforms</span><br><span class="line"></span><br><span class="line"><span class="comment"># Image of 520*520</span></span><br><span class="line">im = torch.rand(<span class="number">3</span>, <span class="number">520</span>, <span class="number">520</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Fill cutout with gray color</span></span><br><span class="line">gray_code = <span class="number">127</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ratio=(1, 1) to set aspect ratio of square</span></span><br><span class="line"><span class="comment"># p=1 means probability is 1, so always apply cutout</span></span><br><span class="line"><span class="comment"># scale=(0.01, 0.01) means we want to get cutout of 1% of image area</span></span><br><span class="line"><span class="comment"># Hence: Cuts out gray square of 52*52</span></span><br><span class="line">cutout_im = transforms.RandomErasing(p=<span class="number">1</span>, </span><br><span class="line">                                 ratio=(<span class="number">1</span>, <span class="number">1</span>), </span><br><span class="line">                                 scale=(<span class="number">0.01</span>, <span class="number">0.01</span>), </span><br><span class="line">                                 value=gray_code)(im)</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>AutoAugment</p>
+</li>
+<li><p>RandAugment</p>
+</li>
+</ul>
+<p>后面两个增强方式具体还没有看他的论文，就不介绍了…</p>
+<h2 id="训练过程"><a href="#训练过程" class="headerlink" title="训练过程"></a>训练过程</h2><p>对有标签的数据使用的 Batch 大小为 <code>B</code>，对于无标签的数据所使用的 Batch 大小为 <code>μB</code>，其中 <code>μ</code> 为超参数，作者使用 <code>μ = 7</code> 用于模型的训练：</p>
+<img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230522201443131.png" alt="image-20230522201443131" style="zoom:80%;">
+
+<p>有监督学习部分，使用交叉熵计算损失函数：</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/fixmatch-supervised-loss.png" alt="Supervised Part of FixMatch"></p>
+<p>对未标记数据制作伪标签：</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/fixmatch-pseudolabel.png" alt="Generating Pseudolabels in FixMatch"></p>
+<p>计算一致性损失，所使用的损失函数也为交叉熵：</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/fixmatch-strong-aug-loss.png" alt="Consistency Regularization in FixMatch"></p>
+<p>对于上述所提到的权重系数 <code>λ</code>，在训练过程中，应用与训练的无标签数据将会越来越多，如下图所示，模型就好像是小孩子学习一般，从简单在到复杂：</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/fixmatch-curriculum-learning.png" alt="Free Curriculum Learning in FixMatch"></p>
+<p>算法如下所示：</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230522201915468.png" alt="image-20230522201915468"></p>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230522204054364.png" alt="image-20230522204054364"></p>
+<p>在论文中，作者做了一个很有意思的实验，即只取 10 个有标签的数据（在 CIFAR-10 中，即每一个类别<u><strong>只取 1 张图片</strong></u>），作者随机挑选了 4 次，构建了 4 个不同的数据集，模型的准确率（中位数）为 64.28%（准确率范围为：48.58% - 85.32%）。</p>
+<p>并且，训练数据集之间的差异并不是很大，理应得到的准确率应该相差不大，但作者发现了，4 个模型在第一个数据集中训练得到的准确率都达到了 61% - 67%，而在第二个数据集中准确率在 68% - 75%。</p>
+<p>作者认为：训练的不稳定性与<u><strong>每个数据集中 10 个标记数据的质量</strong></u>有关，采样得到的低质量的标记数据，可能会让模型很难有效的学习信息，为了验证这一个观点，作者构建了 8 个新的训练数据集（各个类别中最有代表性的有标签数据 -&gt; … -&gt; 各个类别中最没有代表性的有标签数据）进行训练，结果如下图所示：</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/fixmatch-1-label-example.png" alt="Learning with just 1 image per class"></p>
+<p>结果和假设一样，基于最有代表性的有标签数据组成的数据集训练达到了 78% 的准确率，而最没有代表性的有标签数据则为 10%，因此，可以验证，<u><strong>标记数据的质量好坏</strong></u>决定了模型的好坏。</p>
+<h2 id="消融实验"><a href="#消融实验" class="headerlink" title="消融实验"></a>消融实验</h2><p>由于 FixMatch 模型很简单，很容易就能实现（指代码量少），作者对与先前的工作未提到的 优化器（Optimizer）和 学习率更新的方式（ Learning Rate Schedule）花了很多的功夫研究。</p>
+<h3 id="Ablation-Study-on-Optimizer"><a href="#Ablation-Study-on-Optimizer" class="headerlink" title="Ablation Study on Optimizer"></a>Ablation Study on Optimizer</h3><p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230522204944126.png" alt="image-20230522204944126"></p>
+<p>作者在实验中发现：<u><strong>不同的优化器以及优化器中超参数的选择</strong></u>对性能有着很大的影响，并且，Adam 的性能并不比 momentum SGD 好，原因可能在于模型<u><strong>对于学习率的变化很敏感</strong></u>，如下图所示：</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230522205017378.png" alt="image-20230522205017378"></p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230522205036867.png" alt="image-20230522205036867"></p>
+<h3 id="Ablation-Study-on-Learning-Rate-Schedule"><a href="#Ablation-Study-on-Learning-Rate-Schedule" class="headerlink" title="Ablation Study on Learning Rate Schedule"></a>Ablation Study on Learning Rate Schedule</h3><p>上文中所提到，作者发现模型对于学习率的变化很敏感，作者发现，在选择合适的衰减方式的同时，选择合适的衰减率也很重要：</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230522205424281.png" alt="image-20230522205424281"></p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230522205529762.png" alt="image-20230522205529762"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上是我觉得比较有意思的地方，具体可细看论文。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://Ytz7.github.io">七号zz</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://ytz7.github.io/posts/e378f85.html">https://ytz7.github.io/posts/e378f85.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://Ytz7.github.io" target="_blank">七号zz の Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a><a class="post-meta__tags" href="/tags/Semi-Surprised-Learning/">Semi-Surprised-Learning</a><a class="post-meta__tags" href="/tags/Hybrid-Methods/">Hybrid Methods</a></div><div class="post_share"><div class="social-share" data-image="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/posts/77eb0ac8.html" title="Unsupervised-Data-Augmentation"><img class="cover" src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default2.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Unsupervised-Data-Augmentation</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/77eb0ac8.html" title="Unsupervised-Data-Augmentation"><img class="cover" src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default2.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-18</div><div class="title">Unsupervised-Data-Augmentation</div></div></a></div><div><a href="/posts/cc87ae2e.html" title="Virtual Adversarial Training"><img class="cover" src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-17</div><div class="title">Virtual Adversarial Training</div></div></a></div><div><a href="/posts/52ee1a8c.html" title="半监督学习学习过程"><img class="cover" src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default3.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-11</div><div class="title">半监督学习学习过程</div></div></a></div><div><a href="/posts/eaa3f406.html" title="关于深度学习中遇到的知识盲区"><img class="cover" src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default2.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-11</div><div class="title">关于深度学习中遇到的知识盲区</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/2023/03/30/dd14a464-53ce-46f4-897e-e42d595faf5a14.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">七号zz</div><div class="author-info__description">废材研究生🤦‍♂️</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">8</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Ytz7" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:youtonzhenzz@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E8%A6%81%E5%B7%A5%E4%BD%9C"><span class="toc-number">1.</span> <span class="toc-text">主要工作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA%E6%96%B9%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">数据增强方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%B1%E5%A2%9E%E5%BC%BA%EF%BC%88Weak-Augmentation%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">弱增强（Weak Augmentation）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%BA%E5%A2%9E%E5%BC%BA%EF%BC%88Strong-Augmentation%EF%BC%89"><span class="toc-number">2.2.</span> <span class="toc-text">强增强（Strong Augmentation）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%AD%E7%BB%83%E8%BF%87%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">训练过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C"><span class="toc-number">4.</span> <span class="toc-text">实验</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B6%88%E8%9E%8D%E5%AE%9E%E9%AA%8C"><span class="toc-number">5.</span> <span class="toc-text">消融实验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Ablation-Study-on-Optimizer"><span class="toc-number">5.1.</span> <span class="toc-text">Ablation Study on Optimizer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Ablation-Study-on-Learning-Rate-Schedule"><span class="toc-number">5.2.</span> <span class="toc-text">Ablation Study on Learning Rate Schedule</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">6.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/e378f85.html" title="FixMatch"><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FixMatch"/></a><div class="content"><a class="title" href="/posts/e378f85.html" title="FixMatch">FixMatch</a><time datetime="2023-05-22T05:01:14.000Z" title="发表于 2023-05-22 13:01:14">2023-05-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/77eb0ac8.html" title="Unsupervised-Data-Augmentation"><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default2.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Unsupervised-Data-Augmentation"/></a><div class="content"><a class="title" href="/posts/77eb0ac8.html" title="Unsupervised-Data-Augmentation">Unsupervised-Data-Augmentation</a><time datetime="2023-05-18T10:55:32.000Z" title="发表于 2023-05-18 18:55:32">2023-05-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/cc87ae2e.html" title="Virtual Adversarial Training"><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Virtual Adversarial Training"/></a><div class="content"><a class="title" href="/posts/cc87ae2e.html" title="Virtual Adversarial Training">Virtual Adversarial Training</a><time datetime="2023-05-17T11:50:25.000Z" title="发表于 2023-05-17 19:50:25">2023-05-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/eaa3f406.html" title="关于深度学习中遇到的知识盲区"><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default2.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="关于深度学习中遇到的知识盲区"/></a><div class="content"><a class="title" href="/posts/eaa3f406.html" title="关于深度学习中遇到的知识盲区">关于深度学习中遇到的知识盲区</a><time datetime="2023-05-11T11:47:01.000Z" title="发表于 2023-05-11 19:47:01">2023-05-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/52ee1a8c.html" title="半监督学习学习过程"><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default3.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="半监督学习学习过程"/></a><div class="content"><a class="title" href="/posts/52ee1a8c.html" title="半监督学习学习过程">半监督学习学习过程</a><time datetime="2023-05-11T07:08:40.000Z" title="发表于 2023-05-11 15:08:40">2023-05-11</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 By 七号zz</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://Ytz7.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"></div><div class="aplayer no-destroy" data-id="8378626913" data-server="netease" data-type="playlist" data-order="list" data-fixed="true" data-preload="auto" data-mutex="true" ></div><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><div class="app-refresh" id="app-refresh" style="position: fixed;top: -2.2rem;left: 0;right: 0;z-index: 99999;padding: 0 1rem;font-size: 15px;height: 2.2rem;transition: all 0.3s ease;"><div class="app-refresh-wrap" style=" display: flex;color: #fff;height: 100%;align-items: center;justify-content: center;"><label>✨ 有新文章啦！ 👉</label><a href="javascript:void(0)" onclick="location.reload()"><span style="color: #fff;text-decoration: underline;cursor: pointer;">🍗点击食用🍔</span></a></div></div><script>if ('serviceWorker' in navigator) {
+if (navigator.serviceWorker.controller) {
+navigator.serviceWorker.addEventListener('controllerchange', function() {
+showNotification()
+})
+}
+window.addEventListener('load', function() {
+navigator.serviceWorker.register('/sw.js')
+})
+}
+function showNotification() {
+if (GLOBAL_CONFIG.Snackbar) {
+var snackbarBg =
+document.documentElement.getAttribute('data-theme') === 'light' ?
+GLOBAL_CONFIG.Snackbar.bgLight :
+GLOBAL_CONFIG.Snackbar.bgDark
+var snackbarPos = GLOBAL_CONFIG.Snackbar.position
+Snackbar.show({
+text: '✨ 有新文章啦！ 👉',
+backgroundColor: snackbarBg,
+duration: 500000,
+pos: snackbarPos,
+actionText: '🍗点击食用🍔',
+actionTextColor: '#fff',
+onActionClick: function(e) {
+location.reload()
+},
+})
+} else {
+var showBg =
+document.documentElement.getAttribute('data-theme') === 'light' ?
+'#3b70fc' :
+'#1f1f1f'
+var cssText = `top: 0; background: ${showBg};`
+document.getElementById('app-refresh').style.cssText = cssText
+}
+}</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div><!-- hexo injector body_end start --><script async src="/js/ali_font.js"></script><div class="js-pjax"><script async="async">var arr = document.getElementsByClassName('recent-post-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '1.5s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script><script async="async">var arr = document.getElementsByClassName('card-widget');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script><script async="async">var arr = document.getElementsByClassName('flink-list-card');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__flipInY');
+    arr[i].setAttribute('data-wow-duration', '3s');
+    arr[i].setAttribute('data-wow-delay', '');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script><script async="async">var arr = document.getElementsByClassName('flink-list-card');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__animated');
+    arr[i].setAttribute('data-wow-duration', '3s');
+    arr[i].setAttribute('data-wow-delay', '');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script><script async="async">var arr = document.getElementsByClassName('article-sort-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__slideInRight');
+    arr[i].setAttribute('data-wow-duration', '1.5s');
+    arr[i].setAttribute('data-wow-delay', '');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script><script async="async">var arr = document.getElementsByClassName('site-card');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__flipInY');
+    arr[i].setAttribute('data-wow-duration', '3s');
+    arr[i].setAttribute('data-wow-delay', '');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script><script async="async">var arr = document.getElementsByClassName('site-card');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__animated');
+    arr[i].setAttribute('data-wow-duration', '3s');
+    arr[i].setAttribute('data-wow-delay', '');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script></div><script defer src="https://cdn.cbd.int/hexo-butterfly-wowjs/lib/wow.min.js"></script><script defer src="https://cdn.cbd.int/hexo-butterfly-wowjs/lib/wow_init.js"></script><!-- hexo injector body_end end --></body></html>
