@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>Pytorch 学习</title>
+      <link href="/posts/9f542fbf.html"/>
+      <url>/posts/9f542fbf.html</url>
+      
+        <content type="html"><![CDATA[<blockquote><p>好久没有写 python了，对于 pytorch 的语法什么的都忘光光了，写着一篇博客来记录我学习的过程，以及途中遇到的 bug 和解决方法，希望我的 coding 能力能够有所提升…</p></blockquote><h1 id="环境安装配置问题"><a href="#环境安装配置问题" class="headerlink" title="环境安装配置问题"></a>环境安装配置问题</h1><h2 id="安装-CUDA（Linux-环境）"><a href="#安装-CUDA（Linux-环境）" class="headerlink" title="安装 CUDA（Linux 环境）"></a>安装 CUDA（Linux 环境）</h2><h2 id="安装-Pytorch"><a href="#安装-Pytorch" class="headerlink" title="安装 Pytorch"></a>安装 Pytorch</h2><p>就拿最近看的论文 FixMatch 的环境失手，代码需要：</p><ul><li>python 3.6+</li><li>torch 1.4</li><li>torchvision 0.5</li><li>tensorboard</li><li>numpy</li><li>tqdm</li><li>apex (optional)</li></ul><p>创建虚拟环境 fixmatch，这里我选择 python 版本为 3.7：</p><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">conda create -n fixmatch python=3.7</span><br><span class="line">conda activate fixmatch</span><br></pre></td></tr></tbody></table></figure><p>访问 Pytorch 的官网选择对应版本的 torch 和 torchvision 即可：</p><p><a href="https://pytorch.org/get-started/previous-versions/">Previous PyTorch Versions | PyTorch</a></p><p>下载 <code>torch==1.4.0</code> 和<code>torchvision==0.5.0</code>，这里需要加上后缀 <code>-f https://download.pytorch.org/whl/torch_stable.html</code>，因为配置下载源为清华源，好像在清华源中找不到这个版本，所以以后都直接从 Pytorch 官网下载即可：</p><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pip install torch==1.4.0 torchvision==0.5.0 -f https://download.pytorch.org/whl/torch_stable.html</span><br><span class="line">pip install tensorboard</span><br><span class="line">pip install tqdm</span><br></pre></td></tr></tbody></table></figure><p>测试是否可以使用，加入 python 环境，显示以下信息就算安装成功：</p><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; import torch</span></span><br><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; torch.cuda.is_available()</span></span><br><span class="line">True</span><br><span class="line"><span class="meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; torch.__version__</span></span><br><span class="line">'1.4.0+cu92'</span><br></pre></td></tr></tbody></table></figure><h1 id="学习过程"><a href="#学习过程" class="headerlink" title="学习过程"></a>学习过程</h1>]]></content>
+      
+      
+      <categories>
+          
+          <category> 环境配置 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>FixMatch</title>
       <link href="/posts/e378f85.html"/>
       <url>/posts/e378f85.html</url>
