@@ -1,0 +1,459 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Faster-RCNN | 七号zz の Blog</title><meta name="author" content="七号zz"><meta name="copyright" content="七号zz"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks   记一次过度饮酒后的第二天…真的痛苦 看了好几篇在目标检测算法应用半监督学习的文章，感觉好多都是基于 Faster RCNN 作为其主干网络来实现，但是对于目标检测算法，目前只对于 YOLOv3（One-Stage）有所了解，所以说，还是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Faster-RCNN">
+<meta property="og:url" content="https://ytz7.github.io/posts/c018b3e5.html">
+<meta property="og:site_name" content="七号zz の Blog">
+<meta property="og:description" content="Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks   记一次过度饮酒后的第二天…真的痛苦 看了好几篇在目标检测算法应用半监督学习的文章，感觉好多都是基于 Faster RCNN 作为其主干网络来实现，但是对于目标检测算法，目前只对于 YOLOv3（One-Stage）有所了解，所以说，还是">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default.jpg">
+<meta property="article:published_time" content="2023-05-28T09:08:02.000Z">
+<meta property="article:modified_time" content="2023-05-29T14:39:39.024Z">
+<meta property="article:author" content="七号zz">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="Object-Detection">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://ytz7.github.io/posts/c018b3e5.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="manifest" href="/manifest.json"/><meta name="msapplication-TileColor" content="#eedeab"/><link rel="apple-touch-icon" sizes="180x180" href="/img/siteicon/128.png"/><link rel="icon" type="image/png" sizes="32x32" href="/img/siteicon/32.png"/><link rel="icon" type="image/png" sizes="16x16" href="/img/siteicon/16.png"/><link rel="mask-icon" href="/img/siteicon/128.png" color="#5bbad5"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Faster-RCNN',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-29 22:39:39'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-tag-plugins-plus@latest/lib/assets/font-awesome-animation.min.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-tag-plugins-plus@latest/lib/tag_plugins.css" media="defer" onload="this.media='all'"><script src="https://cdn.cbd.int/hexo-butterfly-tag-plugins-plus@latest/lib/assets/carousel-touch.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-wowjs/lib/animate.min.css" media="print" onload="this.media='screen'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="七号zz の Blog" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/2023/03/30/dd14a464-53ce-46f4-897e-e42d595faf5a14.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-envelope"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="七号zz の Blog"><span class="site-name">七号zz の Blog</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-envelope"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Faster-RCNN</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-05-28T09:08:02.000Z" title="发表于 2023-05-28 17:08:02">2023-05-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-29T14:39:39.024Z" title="更新于 2023-05-29 22:39:39">2023-05-29</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/">目标检测</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Faster-RCNN"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="post-content" id="article-container"><blockquote>
+<p>Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks</p>
+</blockquote>
+<blockquote>
+<p>记一次过度饮酒后的第二天…真的痛苦</p>
+<p>看了好几篇在目标检测算法应用半监督学习的文章，感觉好多都是基于 Faster RCNN 作为其主干网络来实现，但是对于目标检测算法，目前只对于 YOLOv3（One-Stage）有所了解，所以说，还是需要对其他目标检测的算法有所了解才好。</p>
+</blockquote>
+<p>论文地址：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1506.01497"> Faster R-CNN: Towards Real-Time Object Detection with Region Proposal Networks</a></p>
+<p>参考文章：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_44791964/article/details/105739918">Pytorch搭建Faster R-CNN目标检测平台</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/STATEABC/article/details/123881710">RCNN、Fast-RCNN、Faster-RCNN网络详解</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/60895929?utm_id=0">Faster RCNN的一些笔记</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/lanran2/article/details/54376126?spm=1001.2014.3001.5502">RPN 解析</a></li>
+</ul>
+<p>参考视频：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1af4y1m7iL?p=3&amp;spm_id_from=pageDriver&amp;vd_source=7801e0201bc8ddcb3d951c7388a08c3e">霹雳吧啦Wz</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1BK41157Vs?p=1&amp;vd_source=7801e0201bc8ddcb3d951c7388a08c3e">Bubbliiiing</a></li>
+</ul>
+<h1 id="RCNN-算法流程"><a href="#RCNN-算法流程" class="headerlink" title="RCNN 算法流程"></a>RCNN 算法流程</h1><ol>
+<li>一张图片生成1k~2k个候选区域(使用Selective Search方法)；</li>
+<li>对每个候选区域，使用深度网络(即图片分类网络)提取特征；</li>
+<li>特征送入每一类的SVM分类器，判别是否属于该类；</li>
+<li>使用回归器精细修正候选框位置。</li>
+</ol>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/56ef4502976d4a25a8c5db087638bbba.png" alt="在这里插入图片描述"></p>
+<p>Selective Search 方法是一种通过图像分割方法来生成一些原始区域的方法，使用一些合并策略将这些区域合并，得到一个层次化的区域结构，这些结构就包含着可能需要的物体。简而言之，<u><strong>Selective Search 方法用于生成候选框</strong></u>。</p>
+<p><strong>对每个候选区域，使用深度网络提取特征</strong>后，将 2000 个候选区域分别缩放到 <u><strong>227 * 227</strong></u> 的大小（AlexNet CNN 的输入大小），通过 CNN 提取特征。获取 <u><strong>4096 维</strong></u>的特征，得到 <u><strong>2000 * 4096 维</strong></u>特征矩阵：</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/353f2eb486744aa1aef24d69a1e8d53d.png" alt="在这里插入图片描述"></p>
+<p>然后将<strong>特征送入每一类的SVM分类器来判定类别</strong>，将 2000 * 4096 维特征与 20 个SVM（Pascal VOC 有 20 个类别）组成的<u><strong>权值矩阵</strong></u> 4096 * 20 相乘，获得 2000 * 20 维矩阵表示每一个建议框是某个目标类别的得分，即在矩阵中 [i, j] 表示第 i 个建议框中是第 j 类的概率大小。</p>
+<p>分别对上述 2000 * 20 维矩阵中每一列即每一类进行<u><strong>非极大值抑制提出重叠建议框</strong></u>，得到该列（即该类中）得分最高的一些建议框。</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/c533db30aeb54d288d7ac3ac38e9789b.png" alt="在这里插入图片描述"></p>
+<p><strong>使用回归器精细修正候选框位置</strong>，分别用 20 个回归器对上述 20 个类别中剩余的建议框进行回归操作，最终得到每个类别的修正后得分最高的 bounding box。</p>
+<p>如下图所示，黄色窗口 P 表示建议框 Region Proposal，绿色窗口 G 表示实际框Ground Truth，红色窗口 G^ 表示 Region Proposal 进行回归后的预测窗口。</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/25b3a317002b43818e22f4744519c948.png" alt="在这里插入图片描述"></p>
+<h1 id="Fast-RCNN-算法流程"><a href="#Fast-RCNN-算法流程" class="headerlink" title="Fast-RCNN 算法流程"></a>Fast-RCNN 算法流程</h1><p>具体流程如下图所示：</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/f6f2b89d4e7d4a13acc6c068406add95.png" alt="在这里插入图片描述"></p>
+<h2 id="SPPNet-x2F-ROI-pooling-layer"><a href="#SPPNet-x2F-ROI-pooling-layer" class="headerlink" title="SPPNet / ROI pooling layer"></a>SPPNet / ROI pooling layer</h2><p>在 RCNN 的基础上对于提取特征的步骤做了改进：</p>
+<ul>
+<li>将整个图像输入到 CNN 中得到特征图，再将 Selective Search 方法得到的<u><strong>候选框投影到特征图</strong></u>上，得到<u><strong>特征矩阵</strong></u></li>
+</ul>
+<p>即 SPPNet，与 RCNN 的对比如下图所示：</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230529172148060.png" alt="image-20230529172148060"></p>
+<p>根据每个候选区域原图与特征图的映射关系，就能在特征图中直接获取特征矩阵，这些候选区域的特征不需要再重复计算。</p>
+<p>对于<u><strong>候选区域的 size 各异的限制</strong></u>，RCNN 通过对候选区域做变换得到，即<u><strong>放缩</strong></u>，在 SPPNet 中由 <code>spatial pyramid pooling</code> 解决，将原始网络中最后一个池化层改进成了空间金字塔池化层，它可以将任意尺寸的特征图转化为固定大小的特征向量从而不同尺寸的候选区域的不同大小特征图样切片也可以转化成相同大小的特征向量以进行后续判决：</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/49a24a3963224bf5a3ede9915c0041cd.png" alt="img"></p>
+<h2 id="softmax-分类器"><a href="#softmax-分类器" class="headerlink" title="softmax 分类器"></a>softmax 分类器</h2><p>输出 N+1 个类别的概率（目标总类别 + 背景），共 N+1 个节点：</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/6b33b1e4c7f34f7bb10615a41d7410c4.png" alt="在这里插入图片描述"></p>
+<h2 id="bbox-regressor-边界框回归器"><a href="#bbox-regressor-边界框回归器" class="headerlink" title="bbox regressor 边界框回归器"></a>bbox regressor 边界框回归器</h2><p>输出对应 N+1 个类别的候选边界框回归参数（dx, dy, dw, dh），共 （N+1） *  4 个节点：</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/dbd6bbb853f34471bb0b6b4344e8e8ee.png" alt="在这里插入图片描述"></p>
+<p>利用回归得到的参数得到边界框：</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/d9880b1884e541b99313fb39a10c0896.png" alt="在这里插入图片描述"></p>
+<h1 id="Faster-RCNN-算法流程"><a href="#Faster-RCNN-算法流程" class="headerlink" title="Faster-RCNN 算法流程"></a>Faster-RCNN 算法流程</h1><ol>
+<li>将图像输入网络得到相应的特征图；</li>
+<li>使用 RPN 结构生成候选框，将 RPN 生成的候选框投影到特征图上获得相应的特征矩阵；</li>
+<li>将每个特征矩阵通过 ROI(Region of Interest) pooling 层缩放到 7x7 大小的特征图，接着将特征图展平通过一系列全连接层得到预测结果。</li>
+</ol>
+<img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230529174255504.png" alt="image-20230529174255504" style="zoom: 67%;">
+
+<p>Faster-RCNN 可以理解为 RPN + Fast-RCNN，右半部分即为 Fast-RCNN。</p>
+<h2 id="RPN"><a href="#RPN" class="headerlink" title="RPN"></a>RPN</h2><p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230529192038186.png" alt="image-20230529192038186"></p>
+<blockquote>
+<p>RPN，全称为 Region Proposal Network，Region Proposal 为区域提取，RPN 就是用来提取候选框的网络</p>
+</blockquote>
+<p>利用深度卷积神经网络来计算初始的候选区域，一个特征图通过<u><strong>滑动窗口</strong></u>，得到256 维特征，其中一个 <code>grid</code> 生成 <code>k</code> 个 <code>anchor boxes</code>，通过两次全连接得到 <code>2k</code> 个分数和 <code>4k</code> 个坐标，如下图所示，其中 <code>cls</code> 代表类别预测，分别预测<u><strong>背景概率</strong></u>和<u><strong>前景概率</strong></u>，前景概率即为区域中是否带有对象的概率，可以视作<u><strong>二分类问题</strong></u>，而 <code>reg</code> 则为 k 个 boxes 的四个参数的预测，分别为：中心点坐标和宽高。</p>
+<img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230529193318163.png" alt="image-20230529193318163" style="zoom: 67%;">
+
+<p>在论文中提出了三种尺度（）和三种比例作为 anchor，每个位置在<u><strong>原图</strong></u>上都对于有 9 个 anchor，对于 RPN 生成的候选框之间存在大量重叠，基于候选框的 <u><strong>cls 得分</strong></u>，采用<u><strong>非极大抑制</strong></u>筛选候选框。最后对应于原图的候选框生成结果可以由下图简略概括：</p>
+<img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230529193915964.png" alt="image-20230529193915964" style="zoom:50%;">
+
+<p>RPN 的<u><strong>输入特征图</strong></u>指的是哪个特征图？</p>
+<p>RPN 的输入特征图就是 Faster-RCNN 中的公共 feature map，主要用以 RPN 和 RoI Pooling 共享。</p>
+<h2 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h2><p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230529194033385.png" alt="image-20230529194033385"></p>
+<p>其中，<code>p</code> 表示的是 anchor 为一个 object 的概率，<code>p*</code> 为 1 时则表示该 anchor 为正样本（positive），反之，则为负样本（negative）。</p>
+<p>判断 anchor 是否为正样本：</p>
+<ul>
+<li>与 Grounding Truth 的重叠区域 IoU 超过 0.7</li>
+<li>为了防止条件 1 筛选过后不存在正样本，故使 IoU 最大的 anchor 也为正样本</li>
+</ul>
+<h2 id="Training-RPNs"><a href="#Training-RPNs" class="headerlink" title="Training RPNs"></a>Training RPNs</h2><ol>
+<li><p>RPN 通过反向传播和随机梯度下降法进行端到端的训练</p>
+</li>
+<li><p>随机从一张图片中采样 256 个 anchors，计算一个 mini-batch 的损失函数</p>
+</li>
+<li><p>采样的 positive anchors 和 negative anchors 的比例是 1 : 1，若正样本少于 128，则从负样本中采样填充</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230529201003539.png" alt="image-20230529201003539"></p>
+</li>
+<li><p>所有层通过 ImageNet 预训练模型进行初始化</p>
+</li>
+</ol>
+<h2 id="Sharing-Features-for-RPN-and-Fast-R-CNN"><a href="#Sharing-Features-for-RPN-and-Fast-R-CNN" class="headerlink" title="Sharing Features for RPN and Fast R-CNN"></a>Sharing Features for RPN and Fast R-CNN</h2><blockquote>
+<p>这一个地方看得不是很懂…</p>
+</blockquote>
+<p><u><strong>RPN和Fast R-CNN共享特征</strong></u>，论文中采用的是：<u><strong>Alternating training</strong></u>：</p>
+<p>首先训练 RPN 层，然后用所得到的 proposals 来训练 Fast-RCNN（此时设置 RPN层不更新），然后得到的 Fast-RCNN，再来初始化并训练 RPN 层，然后再迭代往复。</p>
+<p>目的：为了使两个不同任务能够<u><strong>共享卷积层</strong></u>。</p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230529202144896.png" alt="image-20230529202144896"></p>
+<p><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230529202200709.png" alt="image-20230529202200709"></p>
+<p>具体训练细节：</p>
+<ol>
+<li>训练 RPN，使用 ImageNet 预训练权重，并且在 region proposal 任务上进行训练微调</li>
+<li>使用生成的 region proposal 在 Fast R-CNN 上进行训练，同意使用 ImageNet 预训练权重</li>
+<li>使用所训练的目标检测网络（Fast R-CNN）来初始化 RPN 训练权重，但固定共享的卷积层，仅微调 RPN 独有的层</li>
+<li>让共享的卷积层继续固定，训练微调 Fast R-CNN 独有的层</li>
+</ol>
+<img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230529203002756.png" alt="image-20230529203002756" style="zoom:67%;">
+
+<img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/typora-markdown/images/image-20230529203015920.png" alt="image-20230529203015920" style="zoom:67%;">
+
+<blockquote>
+<p>现在是 2023/05/29 22：38，看代码看得有点昏，走咯走咯，下班…</p>
+<p>git push 一哈🤦‍♂️</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://Ytz7.github.io">七号zz</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://ytz7.github.io/posts/c018b3e5.html">https://ytz7.github.io/posts/c018b3e5.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://Ytz7.github.io" target="_blank">七号zz の Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a><a class="post-meta__tags" href="/tags/Object-Detection/">Object-Detection</a></div><div class="post_share"><div class="social-share" data-image="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/posts/68092092.html" title="2023 年下半年计划"><img class="cover" src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default2.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">2023 年下半年计划</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/77eb0ac8.html" title="Unsupervised-Data-Augmentation"><img class="cover" src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-18</div><div class="title">Unsupervised-Data-Augmentation</div></div></a></div><div><a href="/posts/cc87ae2e.html" title="Virtual Adversarial Training"><img class="cover" src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default3.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-17</div><div class="title">Virtual Adversarial Training</div></div></a></div><div><a href="/posts/eaa3f406.html" title="关于深度学习中遇到的知识盲区"><img class="cover" src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default3.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-11</div><div class="title">关于深度学习中遇到的知识盲区</div></div></a></div><div><a href="/posts/e378f85.html" title="FixMatch"><img class="cover" src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default2.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-22</div><div class="title">FixMatch</div></div></a></div><div><a href="/posts/52ee1a8c.html" title="半监督学习学习过程"><img class="cover" src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default3.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-11</div><div class="title">半监督学习学习过程</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/2023/03/30/dd14a464-53ce-46f4-897e-e42d595faf5a14.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">七号zz</div><div class="author-info__description">废材研究生🤦‍♂️</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Ytz7" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:youtonzhenzz@163.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#RCNN-%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="toc-number">1.</span> <span class="toc-text">RCNN 算法流程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Fast-RCNN-%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="toc-number">2.</span> <span class="toc-text">Fast-RCNN 算法流程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#SPPNet-x2F-ROI-pooling-layer"><span class="toc-number">2.1.</span> <span class="toc-text">SPPNet &#x2F; ROI pooling layer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#softmax-%E5%88%86%E7%B1%BB%E5%99%A8"><span class="toc-number">2.2.</span> <span class="toc-text">softmax 分类器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bbox-regressor-%E8%BE%B9%E7%95%8C%E6%A1%86%E5%9B%9E%E5%BD%92%E5%99%A8"><span class="toc-number">2.3.</span> <span class="toc-text">bbox regressor 边界框回归器</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Faster-RCNN-%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">Faster-RCNN 算法流程</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RPN"><span class="toc-number">3.1.</span> <span class="toc-text">RPN</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0"><span class="toc-number">3.2.</span> <span class="toc-text">损失函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Training-RPNs"><span class="toc-number">3.3.</span> <span class="toc-text">Training RPNs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Sharing-Features-for-RPN-and-Fast-R-CNN"><span class="toc-number">3.4.</span> <span class="toc-text">Sharing Features for RPN and Fast R-CNN</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/c018b3e5.html" title="Faster-RCNN"><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Faster-RCNN"/></a><div class="content"><a class="title" href="/posts/c018b3e5.html" title="Faster-RCNN">Faster-RCNN</a><time datetime="2023-05-28T09:08:02.000Z" title="发表于 2023-05-28 17:08:02">2023-05-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/68092092.html" title="2023 年下半年计划"><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default2.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="2023 年下半年计划"/></a><div class="content"><a class="title" href="/posts/68092092.html" title="2023 年下半年计划">2023 年下半年计划</a><time datetime="2023-05-24T05:48:14.000Z" title="发表于 2023-05-24 13:48:14">2023-05-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/9f542fbf.html" title="Pytorch 学习"><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default3.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Pytorch 学习"/></a><div class="content"><a class="title" href="/posts/9f542fbf.html" title="Pytorch 学习">Pytorch 学习</a><time datetime="2023-05-22T14:05:21.000Z" title="发表于 2023-05-22 22:05:21">2023-05-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/e378f85.html" title="FixMatch"><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default2.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FixMatch"/></a><div class="content"><a class="title" href="/posts/e378f85.html" title="FixMatch">FixMatch</a><time datetime="2023-05-22T05:01:14.000Z" title="发表于 2023-05-22 13:01:14">2023-05-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/77eb0ac8.html" title="Unsupervised-Data-Augmentation"><img src="https://ytz-blog-bucket.oss-cn-guangzhou.aliyuncs.com/blog-image/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Unsupervised-Data-Augmentation"/></a><div class="content"><a class="title" href="/posts/77eb0ac8.html" title="Unsupervised-Data-Augmentation">Unsupervised-Data-Augmentation</a><time datetime="2023-05-18T10:55:32.000Z" title="发表于 2023-05-18 18:55:32">2023-05-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 By 七号zz</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://Ytz7.github.io/">blog</a>!</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><div class="js-pjax"></div><div class="aplayer no-destroy" data-id="8378626913" data-server="netease" data-type="playlist" data-order="list" data-fixed="true" data-preload="auto" data-mutex="true" ></div><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><div class="app-refresh" id="app-refresh" style="position: fixed;top: -2.2rem;left: 0;right: 0;z-index: 99999;padding: 0 1rem;font-size: 15px;height: 2.2rem;transition: all 0.3s ease;"><div class="app-refresh-wrap" style=" display: flex;color: #fff;height: 100%;align-items: center;justify-content: center;"><label>✨ 有新文章啦！ 👉</label><a href="javascript:void(0)" onclick="location.reload()"><span style="color: #fff;text-decoration: underline;cursor: pointer;">🍗点击食用🍔</span></a></div></div><script>if ('serviceWorker' in navigator) {
+if (navigator.serviceWorker.controller) {
+navigator.serviceWorker.addEventListener('controllerchange', function() {
+showNotification()
+})
+}
+window.addEventListener('load', function() {
+navigator.serviceWorker.register('/sw.js')
+})
+}
+function showNotification() {
+if (GLOBAL_CONFIG.Snackbar) {
+var snackbarBg =
+document.documentElement.getAttribute('data-theme') === 'light' ?
+GLOBAL_CONFIG.Snackbar.bgLight :
+GLOBAL_CONFIG.Snackbar.bgDark
+var snackbarPos = GLOBAL_CONFIG.Snackbar.position
+Snackbar.show({
+text: '✨ 有新文章啦！ 👉',
+backgroundColor: snackbarBg,
+duration: 500000,
+pos: snackbarPos,
+actionText: '🍗点击食用🍔',
+actionTextColor: '#fff',
+onActionClick: function(e) {
+location.reload()
+},
+})
+} else {
+var showBg =
+document.documentElement.getAttribute('data-theme') === 'light' ?
+'#3b70fc' :
+'#1f1f1f'
+var cssText = `top: 0; background: ${showBg};`
+document.getElementById('app-refresh').style.cssText = cssText
+}
+}</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div><!-- hexo injector body_end start --><script async src="/js/ali_font.js"></script><div class="js-pjax"><script async="async">var arr = document.getElementsByClassName('recent-post-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '1.5s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script><script async="async">var arr = document.getElementsByClassName('card-widget');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script><script async="async">var arr = document.getElementsByClassName('flink-list-card');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__flipInY');
+    arr[i].setAttribute('data-wow-duration', '3s');
+    arr[i].setAttribute('data-wow-delay', '');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script><script async="async">var arr = document.getElementsByClassName('flink-list-card');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__animated');
+    arr[i].setAttribute('data-wow-duration', '3s');
+    arr[i].setAttribute('data-wow-delay', '');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script><script async="async">var arr = document.getElementsByClassName('article-sort-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__slideInRight');
+    arr[i].setAttribute('data-wow-duration', '1.5s');
+    arr[i].setAttribute('data-wow-delay', '');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script><script async="async">var arr = document.getElementsByClassName('site-card');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__flipInY');
+    arr[i].setAttribute('data-wow-duration', '3s');
+    arr[i].setAttribute('data-wow-delay', '');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script><script async="async">var arr = document.getElementsByClassName('site-card');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__animated');
+    arr[i].setAttribute('data-wow-duration', '3s');
+    arr[i].setAttribute('data-wow-delay', '');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script></div><script defer src="https://cdn.cbd.int/hexo-butterfly-wowjs/lib/wow.min.js"></script><script defer src="https://cdn.cbd.int/hexo-butterfly-wowjs/lib/wow_init.js"></script><!-- hexo injector body_end end --></body></html>
